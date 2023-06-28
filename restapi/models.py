@@ -132,7 +132,7 @@ class CompanyStock(models.Model):
     class Meta:
         managed = False
         db_table = 'company_stock'
-        db_table_comment = '20230614: stock_base -> company_stock 변경\r\n202305    : 현재: 한국 주식 종목의 주식 기본 정보'
+        # db_table_comment = '20230614: stock_base -> company_stock 변경\r\n202305    : 현재: 한국 주식 종목의 주식 기본 정보'
 
 
 class CompanyUs(models.Model):
