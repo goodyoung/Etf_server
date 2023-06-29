@@ -6,27 +6,17 @@ import os,json
 import sqlalchemy as sqla
 import pandas as pd
 from django.http import JsonResponse
-
+from .load_to_data import JsonData
 
 def Main(request):
-    os.chdir("/Users/goodyoung/Desktop/대학교/Dash")
-    
-    with open(f'./.api_keys/secret_homedb.json') as f:
-        secrets = json.loads(f.read())
-        
-    DB_USER, DB_PW = secrets['stockmart']['userid'], secrets['stockmart']['password']
-    
-    engine = sqla.create_engine(f'mysql+pymysql://{DB_USER}:{DB_PW}@220.121.140.51:3030/financedb')  
-
-    query =  sqla.text("select d.종목코드, d.종목명,  e.지급기준일, e.`분배금(원)`, e.DC_R `분배율(%)` "\
-    " from etf_details d, etf_profit_payout e "\
-    " where e.종목코드=d.종목코드 "\
-    " and d.PAY_CLASS='MONTLY' " \
-    # " and e.지급기준일 like '2023-02%' "\
-    " order by e.DC_R desc")
-    result = pd.read_sql(query, con=engine).to_json(orient="records",force_ascii = False)
-    parsed = json.loads(result)
-    s = json.dumps(parsed,ensure_ascii=False, separators=(',', ':')) 
+    query = "select d.종목코드, d.종목명,  e.지급기준일, e.`분배금(원)`, e.DC_R `분배율(%)` \
+     from etf_details d, etf_profit_payout e \
+     where e.종목코드=d.종목코드 \
+     and d.PAY_CLASS='MONTLY' \
+     order by e.DC_R desc"
+     
+    a = JsonData().getData()
+    s = a.getData(query = query)
 
     return JsonResponse({'data':s}, safe = False, json_dumps_params={'ensure_ascii': False})
 
